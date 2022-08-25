@@ -1,4 +1,3 @@
-const Json = require('./valorant.json');
 const fetch = require('node-fetch');
 
 const getRandom = (value) => {
