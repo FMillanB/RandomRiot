@@ -1,16 +1,20 @@
 const Json = require('./valorant.json');
+const fetch = require('node-fetch');
 
 const getRandom = (value) => {
     return Math.floor(Math.random() * value);
 }
 
-function randomAgent(role){
-    const Category = Json.Agents.filter((Category) => Category.rol == role);
+async function randomAgent(role, lang){
+    let response = await fetch(`https://valorant-api.com/v1/agents?language=${lang}&isPlayableCharacter=true`)
+    response = await response.json()
+
+    const Agent = response.data.filter((Agent) => Agent.role.displayName == role);
     
-    return Category[getRandom(Category.length)];
+    return Agent[getRandom(Agent.length)];
 }
 
-function randomRole(){
+function randomRole(lang){
     const getRole = () => {
         switch (getRandom(4)) {
             case 0:
@@ -23,8 +27,30 @@ function randomRole(){
                 return "Iniciador";
         }
     }
-    return randomAgent(getRole());
+    return randomAgent(getRole(), lang);
 }
 
+async function getByName(name, lang){
+    let response = await fetch(`https://valorant-api.com/v1/agents?language=${lang}&isPlayableCharacter=true`)
+
+    response = await response.json()
+
+    const Agent = response.data.filter((agent) => agent.displayName == name);
+
+    return Agent[0]
+}
+
+async function getByRole(role, lang){
+    let response = await fetch(`https://valorant-api.com/v1/agents?language=${lang}&isPlayableCharacter=true`)
+
+    response = await response.json()
+
+    const Agent = response.data.filter((Agent) => Agent.role.displayName == role);
+
+    return Agent
+}
+
+module.exports.getByRole = getByRole
+module.exports.getByName = getByName;
 module.exports.randomAgent = randomAgent;
 module.exports.randomRole = randomRole;
