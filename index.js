@@ -71,8 +71,6 @@ async function getByRole(role, lang){
     return Agent
 }
 
-getByName("Aatrox", "es-MX", "xd")
-
 module.exports.getByRole = getByRole
 module.exports.getByName = getByName;
 module.exports.randomAgent = randomAgent;
