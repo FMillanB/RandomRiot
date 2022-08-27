@@ -9,6 +9,8 @@ async function randomAgent(role, lang){
     response = await response.json()
 
     const Agent = response.data.filter((Agent) => Agent.role.displayName == role);
+
+    console.log(Agent)
     
     return Agent[getRandom(Agent.length)];
 }
@@ -29,14 +31,34 @@ function randomRole(lang){
     return randomAgent(getRole(), lang);
 }
 
-async function getByName(name, lang){
-    let response = await fetch(`https://valorant-api.com/v1/agents?language=${lang}&isPlayableCharacter=true`)
+async function getByName(name, lang, game){
 
-    response = await response.json()
+    const loc = lang.split(/[-_]/)
 
-    const Agent = response.data.filter((agent) => agent.displayName == name);
+    if(game == "val"){
+        let response = await fetch(`https://valorant-api.com/v1/agents?language=${loc[0]}-${loc[1]}&isPlayableCharacter=true`)
 
-    return Agent[0]
+        response = await response.json()
+
+        const Agent = response.data.filter((agent) => agent.displayName == name);
+
+        return Agent[0]
+    }
+    else if (game == "lol") {
+
+        let response = await fetch(`https://ddragon.leagueoflegends.com/cdn/6.24.1/data/${loc[0]}_${loc[1]}/champion.json`);
+
+        response = await response.json();
+
+        response = response.data;
+
+        const Champion = response[name];
+
+        return Champion;
+        
+    } else {
+        return console.log("That game don't exist")
+    }
 }
 
 async function getByRole(role, lang){
@@ -48,6 +70,8 @@ async function getByRole(role, lang){
 
     return Agent
 }
+
+getByName("Aatrox", "es-MX", "xd")
 
 module.exports.getByRole = getByRole
 module.exports.getByName = getByName;
